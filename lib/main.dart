@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:multi_os_poc/widgets/add_location.dart';
+import 'package:multi_os_poc/widgets/customAppBar.dart';
+import 'package:multi_os_poc/widgets/custom_button.dart';
+import 'package:multi_os_poc/widgets/custom_dropdown.dart';
+import 'package:multi_os_poc/widgets/custom_textarea.dart';
+import 'package:multi_os_poc/widgets/service_req_sections.dart';
 
 void main() {
   runApp(MyApp());
@@ -33,76 +39,115 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[250],
       body: SafeArea(
         top: false,
         child: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
-                floating: false,
-                pinned: true,
-                snap: false,
-                expandedHeight: 125,
-                flexibleSpace: Stack(
-                  alignment: AlignmentDirectional.topStart,
-                  fit: StackFit.expand,
+              floating: false,
+              pinned: true,
+              snap: false,
+              expandedHeight: 125,
+              flexibleSpace: CustomAppBar(
+                appBarTitle: "New Service Request",
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.all(15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("assets/black.png"),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(2.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
                         children: [
-                          IconButton(
-                            color: Colors.white,
-                            icon: Icon(Icons.arrow_back),
-                            onPressed: () {},
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(15.0),
-                            child: Text(
-                              "My Requests",
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
+                          ServiceRequestSections(),
+                          Card(
+                            elevation: 0.0,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              padding: EdgeInsets.symmetric(
+                                vertical: 15.0,
+                                horizontal: 10.0,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Where is the problem?",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 15.0),
+                                    child: AddLocation(),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 15.0),
+                                    child: CustomDropdown(
+                                      title: "Floor",
+                                      selectedItem: "02- Second Floor",
+                                      dList: <String>[
+                                        "02- Second Floor",
+                                        "03- Third Floor",
+                                        "04- Fourth Floor",
+                                        "05- Fifth Floor"
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 15.0),
+                                    child: CustomDropdown(
+                                      title: "Room",
+                                      selectedItem: "AM-220",
+                                      dList: <String>[
+                                        "AM-12",
+                                        "AM-323",
+                                        "AM-21"
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 15.0),
+                                    child: CustomCountingTextarea(
+                                      title: "Description",
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
                           ),
-                          Row(
-                            children: [
-                              IconButton(
-                                color: Colors.white,
-                                icon: Image.asset(
-                                  "assets/settings.png",
-                                  width: 25.0,
-                                  height: 25.0,
-                                ),
-                                onPressed: () {},
-                              ),
-                              IconButton(
-                                color: Colors.white,
-                                icon: Icon(Icons.notifications_none),
-                                onPressed: () {},
-                              ),
-                            ],
-                          )
                         ],
                       ),
                     ),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 5.0, vertical: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomButton(
+                            btnText: "Back",
+                            btnColor: Colors.black87,
+                            textColor: Colors.white,
+                            btnFunction: () {},
+                          ),
+                          CustomButton(
+                            btnText: "Next",
+                            btnColor: Colors.blue,
+                            textColor: Colors.white,
+                            btnFunction: () {
+                              print("Next");
+                            },
+                          ),
+                        ],
+                      ),
+                    )
                   ],
-                )),
-            SliverList(
-              delegate: SliverChildBuilderDelegate((_, i) {
-                return ListTile(title: Text("Item $i"));
-              }, childCount: 20),
+                ),
+              ),
             ),
           ],
         ),
