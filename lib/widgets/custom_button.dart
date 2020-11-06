@@ -27,7 +27,7 @@ class _CustomButtonState extends State<CustomButton> {
       child: MaterialButton(
         onPressed: widget.btnFunction,
         child: Container(
-          width: MediaQuery.of(context).size.width / 3,
+          width: MediaQuery.of(context).size.width / 2.85,
           child: Text(
             widget.btnText,
             style: TextStyle(

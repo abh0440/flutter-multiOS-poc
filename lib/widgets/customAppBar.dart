@@ -54,7 +54,11 @@ class CustomAppBar extends StatelessWidget {
                   ),
                   IconButton(
                     color: Colors.white,
-                    icon: Icon(Icons.notifications_none),
+                    icon: Image.asset(
+                      "assets/notification.png",
+                      width: 25.0,
+                      height: 25.0,
+                    ),
                     onPressed: () {},
                   ),
                 ],

@@ -36,7 +36,6 @@ class _CustomCountingTextStatearea extends State<CustomCountingTextarea> {
               padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
               color: Colors.grey[200],
               child: TextField(
-                readOnly: textCount > 10 ? true : false,
                 maxLines: 5,
                 controller: _textFieldController,
                 onChanged: (value) {

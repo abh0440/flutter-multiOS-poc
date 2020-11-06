@@ -33,7 +33,7 @@ class ServiceRequestSectionsState extends State<ServiceRequestSections> {
           Icon(
             iconData,
             size: 15,
-            color: Colors.blue,
+            color: Color(0xff0f61fd),
           ),
           Text(
             section,

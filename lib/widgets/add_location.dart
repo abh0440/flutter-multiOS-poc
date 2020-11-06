@@ -14,10 +14,10 @@ class AddLocation extends StatelessWidget {
               color: Colors.grey[350],
             ),
             padding: EdgeInsets.all(10.0),
-            child: Icon(
-              Icons.location_on,
-              size: 35,
-              color: Colors.white,
+            child: Image.asset(
+              "assets/location.png",
+              width: 35.0,
+              height: 35.0,
             ),
           ),
           Padding(

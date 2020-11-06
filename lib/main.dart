@@ -132,11 +132,13 @@ class _MyHomePageState extends State<MyHomePage> {
                             btnText: "Back",
                             btnColor: Colors.black87,
                             textColor: Colors.white,
-                            btnFunction: () {},
+                            btnFunction: () {
+                              print("Back");
+                            },
                           ),
                           CustomButton(
                             btnText: "Next",
-                            btnColor: Colors.blue,
+                            btnColor: Color(0xff0f61fd),
                             textColor: Colors.white,
                             btnFunction: () {
                               print("Next");
