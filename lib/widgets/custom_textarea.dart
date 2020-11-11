@@ -27,7 +27,7 @@ class _CustomCountingTextStatearea extends State<CustomCountingTextarea> {
             children: [
               Text(widget.title),
               Spacer(),
-              Text("$textCount/100"),
+              Text("$textCount/10"),
             ],
           ),
           Padding(
@@ -45,7 +45,7 @@ class _CustomCountingTextStatearea extends State<CustomCountingTextarea> {
                       textCount = 0;
                     });
                   } else {
-                    if (totalWords.length > 100) {
+                    if (totalWords.length > 10) {
                       totalWords.removeLast();
 
                       print(totalWords.last);

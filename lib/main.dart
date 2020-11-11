@@ -5,6 +5,9 @@ import 'package:multi_os_poc/widgets/customAppBar.dart';
 import 'package:multi_os_poc/widgets/custom_button.dart';
 import 'package:multi_os_poc/widgets/custom_dropdown.dart';
 import 'package:multi_os_poc/widgets/custom_textarea.dart';
+import 'package:multi_os_poc/widgets/request_cards.dart';
+import 'package:multi_os_poc/widgets/request_topics.dart';
+import 'package:multi_os_poc/widgets/search_bar.dart';
 import 'package:multi_os_poc/widgets/service_req_sections.dart';
 
 void main() {
@@ -21,21 +24,23 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'My Requests'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  MyHomePage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // bool fetchViewValue() {
+  //   return .viewVal();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,6 +69,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Column(
                         children: [
                           ServiceRequestSections(),
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: SearchBar(),
+                          ),
                           Card(
                             elevation: 0.0,
                             child: Container(
@@ -82,7 +91,30 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 15.0),
+                                    child: RequestTopics(
+                                      bgColor: Colors.green,
+                                      iconColor: Colors.white,
+                                      iconData: Icons.local_shipping,
+                                      topicName: "Product Request",
+                                      onPressed: () {
+                                        print("icon button");
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 15.0),
                                     child: AddLocation(),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 15.0),
+                                    child: RequestCard(
+                                      grid: false,
+                                      displayIcon: "assets/enterprise.png",
+                                      reqId: "1234564",
+                                      reqName: "Buidling interior",
+                                      status: true,
+                                      type: "General Repairs",
+                                    ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 15.0),
