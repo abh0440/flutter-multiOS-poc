@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:multi_os_poc/widgets/add_location.dart';
@@ -9,6 +11,9 @@ import 'package:multi_os_poc/widgets/request_cards.dart';
 import 'package:multi_os_poc/widgets/request_topics.dart';
 import 'package:multi_os_poc/widgets/search_bar.dart';
 import 'package:multi_os_poc/widgets/service_req_sections.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:local_auth/auth_strings.dart';
 
 void main() {
   runApp(MyApp());
@@ -24,7 +29,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(),
+      home:
+          // Biometrics(),
+          MyHomePage(),
     );
   }
 }
@@ -37,9 +44,68 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // bool fetchViewValue() {
-  //   return .viewVal();
-  // }
+  final LocalAuthentication auth = LocalAuthentication();
+  bool _canCheckBiometrics;
+  List<BiometricType> _availableBiometrics;
+  String _authorized = 'Not Authorized';
+  bool _isAuthenticating = false;
+
+  AndroidAuthMessages androidAuthMessages = const AndroidAuthMessages(
+      cancelButton: "Dismiss", signInTitle: "this is a message");
+
+  Future<void> _checkBiometrics() async {
+    bool canCheckBiometrics;
+    try {
+      canCheckBiometrics = await auth.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _canCheckBiometrics = canCheckBiometrics;
+    });
+  }
+
+  Future<void> _getAvailableBiometrics() async {
+    List<BiometricType> availableBiometrics;
+    try {
+      availableBiometrics = await auth.getAvailableBiometrics();
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _availableBiometrics = availableBiometrics;
+    });
+  }
+
+  Future<void> _authenticate() async {
+    bool authenticated = false;
+    try {
+      authenticated = await auth.authenticateWithBiometrics(
+        localizedReason: "Touch your fingerprint scanner to authenticate",
+        useErrorDialogs: true,
+        stickyAuth: true,
+      );
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _authorized = authenticated ? 'Authorized' : 'Not Authorized';
+    });
+
+    if (authenticated) {
+      print("user is authenticated");
+    }
+  }
+
+  void _cancelAuthentication() {
+    auth.stopAuthentication();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,11 +235,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             },
                           ),
                           CustomButton(
-                            btnText: "Next",
+                            btnText: "Login",
                             btnColor: Color(0xff0f61fd),
                             textColor: Colors.white,
                             btnFunction: () {
-                              print("Next");
+                              print("Login");
+                              _openModal("touch");
                             },
                           ),
                         ],
@@ -186,6 +253,133 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+    );
+  }
+
+  void _openModal(String type) {
+    switch (type) {
+      case "touch":
+        _buildModal(
+          Icons.fingerprint,
+          "Place Your Finger for Login Setup",
+          "Lift and rest the edge of your finger\non the Home button repeatedly.",
+          () {
+            Navigator.pop(context);
+            _isAuthenticating ? _cancelAuthentication() : _authenticate();
+            // _openModal("face");
+          },
+          false,
+        );
+        break;
+      case "face":
+        _buildModal(
+          Icons.face,
+          "Face ID Login Setup",
+          "You can use facial recognition to log\n into your account instead of your password.",
+          () {
+            Navigator.pop(context);
+            // Navigator.of(context).pushReplacement(
+            //   new MaterialPageRoute(
+            //     builder: (context) => HomeScreen(),
+            //   ),
+            // );
+          },
+          true,
+        );
+        break;
+      default:
+    }
+  }
+
+  void _buildModal(IconData iconData, String label, String subLabel,
+      Function onClick, bool hasActions) {
+    showModalBottomSheet<void>(
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.white10,
+      context: context,
+      builder: (context) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: 1.5,
+            sigmaY: 1.5,
+          ),
+          child: Container(
+            height: 275,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.teal,
+                  Colors.blue,
+                  Colors.amber,
+                ],
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(75.0),
+                topRight: Radius.circular(75.0),
+              ),
+            ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: onClick,
+                    child: Icon(
+                      iconData,
+                      size: 100.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    subLabel,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  hasActions
+                      ? Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                print("Enter password");
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                "Enter Password",
+                                style: TextStyle(color: Colors.blue[900]),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                print("Cancel");
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(color: Colors.blue[900]),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container(),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
